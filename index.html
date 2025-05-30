@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cek Kelulusan SMPN 3 Sampara</title>
+</head>
+<body>
+  <h1>Cek Kelulusan</h1>
+  <input type="text" id="nama" placeholder="Nama lengkap" />
+  <input type="text" id="nisn" placeholder="NISN" />
+  <button onclick="cekKelulusan()">Cek</button>
+
+  <p id="hasil"></p>
+
+  <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxsPLtHiF_eVcoRRuM1e3BP9S1rALR4G8RDJUEwSfqJrc8lEA2fCNr8r10ErJB5iHxw1g/exec';
+
+    function cekKelulusan() {
+      const nama = document.getElementById('nama').value.trim();
+      const nisn = document.getElementById('nisn').value.trim();
+      const hasil = document.getElementById('hasil');
+
+      if (!nama || !nisn) {
+        hasil.textContent = 'Mohon isi Nama dan NISN.';
+        return;
+      }
+
+      hasil.textContent = 'Sedang memeriksa...';
+
+      fetch(`${GAS_URL}?nama=${encodeURIComponent(nama)}&nisn=${encodeURIComponent(nisn)}`)
+        .then(res => res.json())
+        .then(data => {
+          hasil.textContent = data.statusKelulusan;
+        })
+        .catch(err => {
+          hasil.textContent = 'Terjadi kesalahan: ' + err.message;
+        });
+    }
+  </script>
+</body>
+</html>
