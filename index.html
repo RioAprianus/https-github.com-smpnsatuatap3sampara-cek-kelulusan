@@ -18,7 +18,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px 20px;
+      padding: 30px 20px 50px;
       margin: 0;
       min-height: 100vh;
       color: #000000;
@@ -44,12 +44,23 @@
       user-select: none;
     }
 
-    /* Countdown styles */
+    #info-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0055ff;
+      margin-bottom: 12px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      user-select: none;
+    }
+
     #countdown {
       display: flex;
       justify-content: space-between;
       gap: 15px;
       margin-bottom: 30px;
+      width: 100%;
+      max-width: 420px;
     }
 
     .count-box {
@@ -59,6 +70,15 @@
       padding: 10px 15px;
       min-width: 65px;
       text-align: center;
+      box-shadow: 0 2px 6px rgba(0,85,255,0.15);
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .count-box:hover {
+      transform: scale(1.05);
+      border-color: #003fcc;
+      box-shadow: 0 4px 12px rgba(0,85,255,0.3);
     }
 
     .count-box span {
@@ -71,6 +91,7 @@
     .count-label {
       font-size: 12px;
       color: #333;
+      margin-top: 4px;
     }
 
     #form-input {
@@ -85,6 +106,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 16px;
+      box-sizing: border-box;
     }
 
     #form-input button {
@@ -96,6 +118,7 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      user-select: none;
     }
 
     #form-input button:hover {
@@ -112,6 +135,16 @@
       line-height: 1.4;
       width: 100%;
     }
+
+    /* Footer copyright */
+    footer {
+      margin-top: 25px;
+      font-size: 13px;
+      color: #555555;
+      text-align: center;
+      user-select: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
   </style>
 </head>
 <body>
@@ -119,6 +152,8 @@
     <div id="logo-container">
       <img src="PENGUMUAN HASIL KELULUSAN .png" alt="Logo Kelulusan" />
     </div>
+
+    <div id="info-text">Pengumuman akan dibuka dalam waktu:</div>
 
     <div id="countdown">
       <div class="count-box">
@@ -148,9 +183,12 @@
     <div id="hasil"></div>
   </div>
 
+  <footer>
+    © 2025 SMPN Satu Atap 3 Sampara. All rights reserved.
+  </footer>
+
   <script>
-    // Target tanggal dan waktu (ubah sesuai kebutuhan)
-    const targetDate = new Date("2025-06-02T10:00:00").getTime();
+    const targetDate = new Date("2025-06-02T09:00:00").getTime();
 
     const countdownInterval = setInterval(function () {
       const now = new Date().getTime();
@@ -161,19 +199,19 @@
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      document.getElementById("days").textContent = days;
-      document.getElementById("hours").textContent = hours;
-      document.getElementById("minutes").textContent = minutes;
-      document.getElementById("seconds").textContent = seconds;
+      document.getElementById("days").textContent = days >= 0 ? days : 0;
+      document.getElementById("hours").textContent = hours >= 0 ? hours : 0;
+      document.getElementById("minutes").textContent = minutes >= 0 ? minutes : 0;
+      document.getElementById("seconds").textContent = seconds >= 0 ? seconds : 0;
 
       if (distance < 0) {
         clearInterval(countdownInterval);
         document.getElementById("countdown").style.display = "none";
+        document.getElementById("info-text").style.display = "none";
         document.getElementById("form-input").style.display = "flex";
       }
     }, 1000);
 
-    // Fungsi cek kelulusan (fetch ke Google Apps Script)
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbxsPLtHiF_eVcoRRuM1e3BP9S1rALR4G8RDJUEwSfqJrc8lEA2fCNr8r10ErJB5iHxw1g/exec';
 
     function cekKelulusan() {
