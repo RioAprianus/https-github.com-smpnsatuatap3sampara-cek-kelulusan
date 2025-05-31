@@ -2,17 +2,178 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Cek Kelulusan SMPN 3 Sampara</title>
+  <title>Pengumuman Kelulusan SMPN 3 Sampara</title>
+  <style>
+    :root {
+      --container-width: 500px;
+      --container-padding: 30px;
+      --container-border-radius: 14px;
+      --logo-width: 500px;
+      --logo-margin-bottom: 25px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      margin: 0;
+      min-height: 100vh;
+      color: #000000;
+    }
+
+    #container {
+      width: var(--container-width);
+      padding: var(--container-padding);
+      background-color: #d6e4ff;
+      border-radius: var(--container-border-radius);
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #logo-container img {
+      width: var(--logo-width);
+      height: auto;
+      margin-bottom: var(--logo-margin-bottom);
+      display: block;
+      user-select: none;
+    }
+
+    /* Countdown styles */
+    #countdown {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .count-box {
+      background-color: #ffffff;
+      border: 2px solid #0055ff;
+      border-radius: 12px;
+      padding: 10px 15px;
+      min-width: 65px;
+      text-align: center;
+    }
+
+    .count-box span {
+      display: block;
+      font-size: 20px;
+      font-weight: bold;
+      color: #0055ff;
+    }
+
+    .count-label {
+      font-size: 12px;
+      color: #333;
+    }
+
+    #form-input {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    #form-input input[type="text"] {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    #form-input button {
+      background-color: #0055ff;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #form-input button:hover {
+      background-color: #003fcc;
+    }
+
+    #hasil {
+      margin-top: 20px;
+      font-weight: 600;
+      color: #000;
+      text-align: center;
+      min-height: 50px;
+      user-select: text;
+      line-height: 1.4;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <h1>Cek Kelulusan</h1>
-  <input type="text" id="nama" placeholder="Nama lengkap" />
-  <input type="text" id="nisn" placeholder="NISN" />
-  <button onclick="cekKelulusan()">Cek</button>
+  <div id="container">
+    <div id="logo-container">
+      <img src="PENGUMUAN HASIL KELULUSAN .png" alt="Logo Kelulusan" />
+    </div>
 
-  <p id="hasil"></p>
+    <div id="countdown">
+      <div class="count-box">
+        <span id="days">0</span>
+        <div class="count-label">Hari</div>
+      </div>
+      <div class="count-box">
+        <span id="hours">0</span>
+        <div class="count-label">Jam</div>
+      </div>
+      <div class="count-box">
+        <span id="minutes">0</span>
+        <div class="count-label">Menit</div>
+      </div>
+      <div class="count-box">
+        <span id="seconds">0</span>
+        <div class="count-label">Detik</div>
+      </div>
+    </div>
+
+    <div id="form-input">
+      <input type="text" id="nama" placeholder="Masukkan Nama" />
+      <input type="text" id="nisn" placeholder="Masukkan NISN" />
+      <button onclick="cekKelulusan()">Cek Kelulusan</button>
+    </div>
+
+    <div id="hasil"></div>
+  </div>
 
   <script>
+    // Target tanggal dan waktu (ubah sesuai kebutuhan)
+    const targetDate = new Date("2025-05-10T08:00:00").getTime();
+
+    const countdownInterval = setInterval(function () {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").textContent = days;
+      document.getElementById("hours").textContent = hours;
+      document.getElementById("minutes").textContent = minutes;
+      document.getElementById("seconds").textContent = seconds;
+
+      if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.getElementById("countdown").style.display = "none";
+        document.getElementById("form-input").style.display = "flex";
+      }
+    }, 1000);
+
+    // Fungsi cek kelulusan (fetch ke Google Apps Script)
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbxsPLtHiF_eVcoRRuM1e3BP9S1rALR4G8RDJUEwSfqJrc8lEA2fCNr8r10ErJB5iHxw1g/exec';
 
     function cekKelulusan() {
@@ -30,7 +191,15 @@
       fetch(`${GAS_URL}?nama=${encodeURIComponent(nama)}&nisn=${encodeURIComponent(nisn)}`)
         .then(res => res.json())
         .then(data => {
-          hasil.textContent = data.statusKelulusan;
+          const statusText = data.statusKelulusan || '';
+
+          if (statusText.toLowerCase().includes("lulus")) {
+            const warnaHijau = `<span style="color:green;font-weight:bold;">LULUS</span>`;
+            hasil.innerHTML = 
+              `PESERTA ATAS NAMA <strong>${nama}</strong> DENGAN NISN <strong>${nisn}</strong> DINYATAKAN ${warnaHijau}<br>TETAP SEMANGAT!`;
+          } else {
+            hasil.textContent = statusText;
+          }
         })
         .catch(err => {
           hasil.textContent = 'Terjadi kesalahan: ' + err.message;
